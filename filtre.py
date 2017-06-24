@@ -14,9 +14,9 @@ for ligne in fichier:
 	try:
 		tab=ligne.split("\t")
 		freq=int(tab[1].strip())
-		dico.add(tab[0].strip())
 		rtio= float(tab[2]) / 120000
 		if freq > borneMin and freq < borneMax and rtio < ratio:
+			dico.add(tab[0].strip())
 			cpt+=1
 	except IndexError:
 		error+=1
