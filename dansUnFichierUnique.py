@@ -26,7 +26,7 @@ for annee in annees:
 				ligne=ligne.translate(None, string.punctuation)
 				ligne=ligne.split(" ")
 				for mot in ligne:
-					mot=mot.strip()
+					mot=mot.strip().lower()
 					if mot in vocabHapax:
 						vocabHapax.remove(mot)
 					else:
