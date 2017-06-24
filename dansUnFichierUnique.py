@@ -11,7 +11,7 @@ for ligne in fichier:
 	tab=ligne.split("\t")
 	freq=int(tab[1].strip())
 	if freq < 2:
-		vocabHapax.add(tab[0].strip(""))
+		vocabHapax.add(tab[0].strip())
 
 for annee in annees:
 	fichiers=os.listdir("hasIpcCorr/"+annee)
@@ -26,6 +26,7 @@ for annee in annees:
 				ligne=ligne.translate(None, string.punctuation)
 				ligne=ligne.split(" ")
 				for mot in ligne:
+					mot=mot.strip()
 					if mot in vocabHapax:
 						vocabHapax.remove(mot)
 					else:
