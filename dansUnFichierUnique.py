@@ -15,7 +15,7 @@ for ligne in fichier:
 	tab=ligne.split("\t")
 	freq=int(tab[1].strip())
 	if freq < 2:
-		vocabHapax.add(tab[0].strip())
+		vocabHapax.add(tab[0].strip().lower())
 
 tableTranslation=""
 for p in string.punctuation:
@@ -24,6 +24,7 @@ for p in string.punctuation:
 trantab = maketrans(string.punctuation, tableTranslation)
 
 cptAnnee=0
+annees.sort()
 for annee in annees:
 	dicoDoc=dict()
 	fichiers=os.listdir("hasIpcCorr/"+annee)
@@ -59,12 +60,11 @@ for annee in annees:
 			dicoFreq[mot]=[]
 			for i in range(15):
 				dicoFreq[mot].append(0)
-		dicoFreq[mot][cptAnnee]+=dicoDoc[mot]								
+		dicoFreq[mot][cptAnnee]=dicoDoc[mot]								
 	cptAnnee+=1
 res=open("voc.tsv","w")
-for mot in dicoDoc:
-	if dicoDoc[mot] > 1:
-		res.write(mot + "\t"+str(dicoFreq[mot])+"\t"+str(dicoDoc[mot])+"\t"+str(dicoYear[mot])+"\n")
+for mot in dicoFreq:
+	res.write(mot + "\t"+str(dicoFreq[mot])+"\t"+str(dicoYear[mot])+"\n")
 res.close()
 					
 

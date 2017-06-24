@@ -6,6 +6,7 @@ dico=set()
 borneMin=int(sys.argv[1])
 borneMax=int(sys.argv[2])
 ratio=float(sys.argv[3])
+ratio2=float(sys.argv[4])
 cpt=0
 
 error=0
@@ -15,7 +16,8 @@ for ligne in fichier:
 		tab=ligne.split("\t")
 		freq=int(tab[1].strip())
 		rtio= float(tab[2]) / 120000
-		if freq > borneMin and freq < borneMax and rtio < ratio:
+		rt=float(tab[2])/float(tab[1])
+		if freq > borneMin and freq < borneMax and rtio < ratio and rt > ratio2:
 			dico.add(tab[0].strip())
 			cpt+=1
 	except IndexError:
