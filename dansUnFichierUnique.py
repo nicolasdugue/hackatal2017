@@ -26,7 +26,6 @@ trantab = maketrans(string.punctuation, tableTranslation)
 cptAnnee=0
 for annee in annees:
 	dicoDoc=dict()
-	ensembleMotAnnee=set()
 	fichiers=os.listdir("hasIpcCorr/"+annee)
 	for f in fichiers:
 		brevet=open("hasIpcCorr/"+annee+"/"+f)
@@ -44,17 +43,15 @@ for annee in annees:
 						if mot in vocabHapax:
 							vocabHapax.remove(mot)
 						else:
-							if mot in ensembleMotAnnee:
+							if mot in dicoDoc:
 								if mot not in ensembleMotDoc:
 									ensembleMotDoc.add(mot)
 									dicoDoc[mot]+=1
-								
 							else: #Pas vu cette annee
-								ensembleMotAnnee.add(mot)
+								dicoDoc[mot]=1
 								if mot in dicoYear:
 									dicoYear[mot]+=1
 								else:
-									dicoDoc[mot]=1
 									ensembleMotDoc.add(mot)
 									dicoYear[mot]=1
 	for mot in dicoDoc:
