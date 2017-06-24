@@ -5,6 +5,9 @@ dicoFreq=dict()
 dicoDoc=dict()
 #dicoClass
 
+from string import maketrans
+
+
 fichier=open("types.tsv")
 vocabHapax=set()
 for ligne in fichier:
@@ -12,6 +15,12 @@ for ligne in fichier:
 	freq=int(tab[1].strip())
 	if freq < 2:
 		vocabHapax.add(tab[0].strip())
+
+tableTranslation=""
+for p in string.punctuation:
+	tableTranslation+=" "
+
+trantab = maketrans(string.punctuation, tableTranslation)
 
 for annee in annees:
 	fichiers=os.listdir("hasIpcCorr/"+annee)
@@ -23,23 +32,24 @@ for annee in annees:
 				continue
 			else:
 				ligne=ligne.strip("abstract :::").strip("claim :::")
-				ligne=ligne.translate(None, string.punctuation)
+				ligne=ligne.translate(trantab)
 				ligne=ligne.split(" ")
 				for mot in ligne:
-					mot=mot.strip().lower()
-					if mot in vocabHapax:
-						vocabHapax.remove(mot)
-					else:
-						if mot in ensembleMotDoc:
-							dicoFreq[mot]+=1
+					if len(mot) > 3:
+						mot=mot.strip().lower()
+						if mot in vocabHapax:
+							vocabHapax.remove(mot)
 						else:
-							ensembleMotDoc.add(mot)
-							if mot in dicoDoc:
-								dicoDoc[mot]+=1
+							if mot in ensembleMotDoc:
 								dicoFreq[mot]+=1
 							else:
-								dicoDoc[mot]=1
-								dicoFreq[mot]=1
+								ensembleMotDoc.add(mot)
+								if mot in dicoDoc:
+									dicoDoc[mot]+=1
+									dicoFreq[mot]+=1
+								else:
+									dicoDoc[mot]=1
+									dicoFreq[mot]=1
 res=open("voc.tsv","w")
 for mot in dicoDoc:
 	if dicoDoc[mot] > 1:
