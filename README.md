@@ -47,6 +47,10 @@ Exemple avec le terme *informatique* :
 ```
 python plotDistance.py informatique
 ```
+ou avec *lentille*
+```
+python plotDistance.py informatique
+```
   
 #### Les embeddings
 
