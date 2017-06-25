@@ -22,14 +22,14 @@ for ligne in fichier:
 			if classe in classes:
 				nbClasse+=1
 		docTotal=np.sum(np.array(freq))
-		if not mot.isdigit() and nbAnnee > 1 and docTotal > borneMin and docTotal < borneMax and nbClasse < nbClasseMax:
+		if not mot.isdigit() and nbAnnee > 1 and docTotal > borneMin and docTotal < borneMax and nbClasse <= nbClasseMax:
 			dico[tab[0].strip()]=ligne.strip()
 			cpt+=1
 	except IndexError:
 		error+=1
 		pass
 print cpt
-fichier =open("voc_freqmin"+str(borneMin)+"_docmax"+str(borneMax)+"_classemax"+nbClasseMax, "w")
+fichier =open("voc_freqmin"+str(borneMin)+"_docmax"+str(borneMax)+"_classemax"+str(nbClasseMax), "w")
 for mot in dico:
 	fichier.write(dico[mot]+"\n")
 fichier.close()
