@@ -88,5 +88,7 @@ for mot in dico:
 
 
 for item in data:
-	py.scatter(item[1]*1000, item[2]*1000, s=10000, c=(item[2], 0, 1 - item[2]), marker=r"$ {} $".format(item[0].replace("é", "e")), edgecolors='none' )
+	py.scatter(item[1]*1000, item[2]*1000, s=10000, c=(item[2], 0, 1 - item[2]), marker=r"$ {} $".format(item[0].replace("é", "e").replace("è", "e").replace("à", "a").replace("ù", "u")), edgecolors='none' )
+py.xlabel('Distance sur la distribution dans les annees')
+py.ylabel('Distance sur la distro dans les catego')
 py.show()
