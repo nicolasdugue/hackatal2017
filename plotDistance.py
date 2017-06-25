@@ -27,7 +27,7 @@ def euclide(p, q):
        total += (value-q[idx])*(value-q[idx])
     return total
 
-fichier=open("voc.tsv")
+fichier=open("vocLemma.tsv")
 dico=set()
 
 # mot pour le calcul de distance
@@ -68,7 +68,7 @@ for mot in dico:
 	distance = euclide(histoLeMot, freq[mot])
 	maxDistanceTempo=max(maxDistanceTempo,distance)
 
-data=[("a",1000,10000,10000),("a",1000,10000,10000),("a",1000,10000,10000),("a",1000,10000,10000),("a",1000,10000,10000),("a",1000,10000,10000),("a",1000,10000,10000),("a",1000,10000,10000),("a",1000,10000,10000),("a",1000,10000,10000)]
+data=[("a",1000,10000,10000),("a",1000,10000,10000),("a",1000,10000,10000),("a",1000,10000,10000),("a",1000,10000,10000),("a",1000,10000,10000),("a",1000,10000,10000),("a",1000,10000,10000),("a",1000,10000,10000),("a",1000,10000,10000),("a",1000,10000,10000),("a",1000,10000,10000),("a",1000,10000,10000),("a",1000,10000,10000),("a",1000,10000,10000),("a",1000,10000,10000)]
 for mot in dico:
 	# distance1 = (kl(histoLeMot, freq[mot])+kl(freq[mot], histoLeMot))/maxDistanceTempo
 	distance1 = euclide(histoLeMot, freq[mot])/float(maxDistanceTempo)
@@ -88,7 +88,10 @@ for mot in dico:
 
 
 for item in data:
-	py.scatter(item[1]*1000, item[2]*1000, s=10000, c=(item[2], 0, 1 - item[2]), marker=r"$ {} $".format(item[0].replace("é", "e").replace("è", "e").replace("à", "a").replace("ù", "u")), edgecolors='none' )
+	try:
+		py.scatter(item[1]*1000, item[2]*1000, s=5000, c=(item[2], 0, 1 - item[2]), marker=r"$ {} $".format(item[0]), edgecolors='none' )
+	except: 
+		pass
 py.xlabel('Distance sur la distribution dans les annees')
 py.ylabel('Distance sur la distro dans les catego')
 py.show()
