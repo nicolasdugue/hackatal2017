@@ -29,28 +29,45 @@ with open('lefff-3.4.elex/lefff-3.4.elex') as d:
 sortie_error =open("vocLemma-notfound.tsv", "w")
 
 error=0
+lignes=0
+
+
+def heuristiqueDuDoigt(motoriginal, freqM, nbAnnee, classesM):
+	# mot de 5 lettres et plus, on garde
+	if (len(motoriginal)>4):
+		return True
+	# apparait dans 4 années ou plus on garde
+	if (nbAnnee>3):
+		return True
+	if (np.sum(freqM)>5):
+		return True
+	return False
+
+
 for ligne in fichier:
+	lignes+=1
 	try:
 		tab=ligne.split("\t")
 		mot=tab[0].strip()
 		motoriginal=mot
 		mot = lem_dict.get(mot, "")
-		if (len(mot)>0):
+		freqM = np.array(map(int, list(tab[1].strip("[").strip("]").replace(" ", "").split(","))))
+		nbAnnee = int(tab[2])
+		classesM = np.array(map(int, list(tab[3].strip().strip("[").strip("]").replace(" ", "").split(","))))
+		classesnormM = np.array(map(float, list(tab[4].strip().strip("[").strip("]").replace(" ", "").split(","))))
+		if (len(mot)>0) or heuristiqueDuDoigt(motoriginal,freqM,nbAnnee, classesM):
+			# trouvé dans lefff ou heuristique réussie, on record
 			if (mot in dico):
-				freqM = np.array(map(int, list(tab[1].strip("[").strip("]").replace(" ", "").split(","))))
 				np.add(freq[mot], freqM, freq[mot])
-				classesM=np.array(map(int, list(tab[3].strip().strip("[").strip("]").replace(" ", "").split(","))))
 				np.add(classes[mot], classesM, classes[mot])
-				classesnormM=np.array(map(float, list(tab[4].strip().strip("[").strip("]").replace(" ", "").split(","))))
 				np.add(classesnorm[mot], classesnormM, classesnorm[mot])
 			else:
-				freq[mot]=np.array(map(int, list(tab[1].strip("[").strip("]").replace(" ", "").split(","))))
-				classes[mot]=np.array(map(int, list(tab[3].strip().strip("[").strip("]").replace(" ", "").split(","))))
-				classesnorm[mot]=np.array(map(float, list(tab[4].strip().strip("[").strip("]").replace(" ", "").split(","))))
+				freq[mot]=freqM
+				classes[mot]=classesM
+				classesnorm[mot]=classesnormM
 				dico.add(mot)
 				cpt+=1
 		else:
-			#mot pas trouvé dans lefff
 			error+=1
 			sortie_error.write(motoriginal + "\t" + tab[1] + "\t" + tab[2]+ "\t" + tab[3]+ "\t" + tab[4] + "\n")
 	except IndexError:
@@ -58,8 +75,9 @@ for ligne in fichier:
 		sortie_error.write(motoriginal + "\t" + tab[1] + "\t" + tab[2] + "\t" + tab[3] + "\t" + tab[4] + "\n")
 		pass
 
-print cpt
-print error
+print "output : "+ str(cpt)
+print "erreurs : " + str(error)
+print "compression : " + str(lignes-(cpt+error))
 
 sortie =open("vocLemma.tsv", "w")
 for mot in dico:
