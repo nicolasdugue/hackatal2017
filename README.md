@@ -68,3 +68,13 @@ ou avec *anxiolytique* qui montre la baisse du nombre de brevets ces dernières 
 ```
 python3 neighbours.py anxiolytique
 ```
+
+#### Les clusters
+
+Cette dernière partie permet une vision plut en hauteur des données. Il s'agit de considérer l'évolution des clusters à travers les mots qui leur sont caractéristiques.
+Nous découpons ainsi dans cette partie le corpus en grandes périodes de plusieurs années ou les documents dans les mêmes clusters sont considérés ensemble. Dans chaque période, on considère pour chaque mot d'un cluster son score de représentativité et de spécificité relativement aux autres clusters en utilisant la feature f-mesure introduite par Lamirel et al.
+Nous trions ensuite les mots selon leur valeur de feature f-mesure. Et dans chaque période, nous regardons la position du mot : à quel décile appartient-il. 
+
+Les mots stables sont les mots qui permettent d'étiqueter le cluster dans le temps et qui décrivent ainsi les grands thème du cluster.
+
+Les mots qui évoluent représentent des thématiues émergentes ou mourantes.
