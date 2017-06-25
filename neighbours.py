@@ -1,5 +1,8 @@
 import sys
 
+import numpy as np
+import matplotlib.pyplot as plt
+
 import gensim.models
 model = gensim.models.Word2Vec.load('embeddings/patentslem2vec.gensim')
 
@@ -24,8 +27,31 @@ def neighbours(word):
     return [(w, voc.get(w, None)) for w in neighbs]
 
 
+def plot_neighbours(word):
+    n = neighbours(word)
+
+    years_plot = plt.subplot(121)
+    years = np.arange(2000, 2015)
+
+    classes = 'ABCDEFGH'
+    bar_width = 5
+    classes_x = bar_width*len(n)*np.arange(len(classes))
+    classes_plot = plt.subplot(122)
+    classes_plot.set_xticks(classes_x, minor=False)
+    classes_plot.set_xticklabels(classes, minor=False)
+
+    for i, (w, dat) in enumerate(n):
+        if dat is None:
+            continue
+        y, c = dat
+        years_plot.plot(years, y, label=w)
+        classes_plot.bar(classes_x+i*bar_width,  c, width=bar_width, label=w)
+
+    classes_plot.legend()
+    years_plot.legend()
+    plt.show()
+
 voc = read_voc()
 
 if __name__ == '__main__':
-    print(len(voc))
-    print(neighbours(sys.argv[1]))
+    plot_neighbours(sys.argv[1])
