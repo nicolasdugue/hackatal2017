@@ -17,7 +17,7 @@ Nous supprimons les dossiers 2000, 2016 et 2017 qui contiennent beaucoup moins d
 
 #### Le vocabulaire
 
-Nous avons procédé à une lemmatisation avec **\*\*\*\*Lefff\*\*\*\*** et nous obtenons ainsi le fichier **\*\*\*\*FICHIER.CSV\*\*\*\***
+Nous avons procédé à une lemmatisation avec **Lefff** et nous obtenons ainsi le fichier **vocLemma.tsv**
 qui décrit levocabulaire que nous considérons lors de nos traitements.
 
 Nous avons la possibilité de filtrer ce vocabulaire en utilisant **filtre.py** sur trois critères :
