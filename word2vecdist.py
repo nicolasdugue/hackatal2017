@@ -1,17 +1,14 @@
-'''Simple wrapper around gensim word2vec model for patents.'''
-
-import sys
-
 import gensim.models
 
 model = gensim.models.Word2Vec.load('patentsword2vec.gensim')
 
-positive = [a for a in sys.argv[1:] if not a.startswith('-')]
-negative = [a[1:] for a in sys.argv[1:] if a.startswith('-')]
+n = len(model.wv.vocab)
 
-positive_filtered = [w for w in positive if w in model.wv.vocab]
-negative_filtered = [w for w in negative if w in model.wv.vocab]
-
-# print('Not in vocabulary : {}'.format(list()))
-
-print(model.wv.most_similar(positive=positive, negative=negative))
+with open('embeddingsdist.dat', 'w') as out:
+    for i, word in enumerate(model.wv.vocab):
+        out.write('{word}\t{nlst}'.format(
+            word=word,
+            nlst=','.join('{n}={d}'.format(n=n, d=d) for n, d in model.wv.most_similar(word))
+        ))
+        if not i % 100:
+            print('{i} ({perc:.2f}%) words done'.format(i=i, perc=100*i/n))
