@@ -49,8 +49,9 @@ python plotDistance.py informatique
 ```
 ou avec *lentille*
 ```
-python plotDistance.py informatique
+python plotDistance.py lentille
 ```
+où l'on observe des proximités intéressantes.
   
 #### Les embeddings
 
