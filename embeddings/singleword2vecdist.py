@@ -1,23 +1,34 @@
-'''Simple wrapper around gensim word2vec model for patents.'''
+'''Simple wrapper around gensim word2vec model for patents.
+
+Usage: singleword2vec [--lemma | --model <modelfile>] <word>
+
+Options:
+  -m, --model <modelfile>  Use another gensim model file  [default: patentsword2vec.gensim]
+  -l, --lemma  Use lemma2vec instead of word2vec
+  -h, --help  Print this help message'''
 
 import sys
 
+from docopt import docopt
+
 import gensim.models
 
-if sys.argv[1] in ['-h', '--help']:
-    print('USAGE: python3 word2vecdist.py écran affichage -cloison -mur')
-    sys.exit(0)
 
-model = gensim.models.Word2Vec.load('patentsword2vec.gensim')
+def main_entry_point(argv=sys.argv[1:]):
+    arguments = docopt(__doc__, version='0.0.0', argv=argv)
 
-positive = [a for a in sys.argv[1:] if not a.startswith('-')]
-negative = [a[1:] for a in sys.argv[1:] if a.startswith('-')]
+    if arguments['--lemma']:
+        model = gensim.models.Word2Vec.load('patentslem2vec.gensim')
+    else:
+        model = gensim.models.Word2Vec.load(arguments['--model'])
 
-positive_filtered = [w for w in positive if w in model.wv.vocab]
-negative_filtered = [w for w in negative if w in model.wv.vocab]
+    word = arguments['<word>']
 
-ignored = [w for w in positive+negative if w not in positive_filtered+negative_filtered]
-if ignored:
-    print('Ignoring {}'.format(ignored))
+    try:
+        print(model.wv.most_similar(word))
+    except KeyError:
+        print('{word!r} is not in the model'.format(word=word))
 
-print(model.wv.most_similar(positive=positive, negative=negative))
+
+if __name__ == '__main__':
+    main_entry_point()
