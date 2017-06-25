@@ -1,7 +1,7 @@
 import os
 import sys
 import string
-annees=os.listdir("hasIpcCorr")
+annees=os.listdir("../hasIpcCorr")
 dicoClass=dict()
 periodNumber=int(sys.argv[1])
 

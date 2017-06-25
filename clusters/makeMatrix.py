@@ -7,7 +7,7 @@ dicoLabels=dict()
 import os
 import sys
 import string
-annees=os.listdir("hasIpcCorr")
+annees=os.listdir("../hasIpcCorr")
 dicoClass=dict()
 periodNumber=int(sys.argv[1])
 
@@ -35,7 +35,7 @@ for chemin in res:
 	idx+=1
 res.close()
 
-res=open("../voc_freqmin100_docmax5000_classemax6")
+res=open("../voc_freqmin100_docmax1000_classemax6")
 voc=dict()
 for ligne in res:
 	mot=ligne.split("\t")[0].strip()

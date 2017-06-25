@@ -1,8 +1,11 @@
+# -*- coding: utf-8 -*-
+
 import numpy as np
 import operator
+import sys
 
-fichier1=open("specificites20012002A.dfsl")
-fichier2=open("specificites20032004A.dfsl")
+fichier1=open(sys.argv[1])
+fichier2=open(sys.argv[2])
 
 values1=[]
 dico1=dict()
@@ -62,10 +65,18 @@ for mot in dicoPerc1:
 		liste.append((mot, dicoPerc1[mot], dicoPerc2[mot], dicoPerc1[mot]-dicoPerc2[mot]))
 liste.sort(key=operator.itemgetter(1))
 
-fichier=open("ComparaisonA1erePeriode", "w")
+fichier=open("Cmp_"+sys.argv[1]+"_"+sys.argv[2], "w")
+print("--------Mots stables très représentatifs----------\n\n")
 for mot in liste:
 	mot,perc1,perc2,diff=mot
-	fichier.write(mot+"\t"+str(perc1)+"\t"+str(perc2)+"\t"+str(diff)+"\n")
+	if perc1 == 0 and perc2 == 0:
+		print(mot)
+	fichier.write(mot+"\t"+str(perc1)+"\t"+str(perc2)+"\t"+str(diff)+"\t"+str(dico1[mot])+"\n")
 fichier.close()
 
+print("\n\n--------Mots qui burst----------\n\n")
+for mot in liste:
+	mot,perc1,perc2,diff=mot
+	if perc1 > 1 and perc2 == 0:
+		print(mot)
 
