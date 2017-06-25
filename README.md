@@ -44,9 +44,8 @@ Lorsque nous nous intéressons à un mot, il est donc possible de calculer la di
 
 Ce résultat est implémenté dans **plotDistance.py**. 
 Exemple avec le terme *informatique* :
-
-
-  python plotDistance.py informatique
-  
+```
+python plotDistance.py informatique
+```
   
 
