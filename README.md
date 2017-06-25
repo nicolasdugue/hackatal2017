@@ -42,6 +42,10 @@ A partir de cela, il devient possible de comparer les évolutions de deux mots :
 Pour cela, nous optons pour des distances sur les histogrammes : euclidiennes ou la divergence de Kullback-Leibler que nous rendons symétrique en l'utilisant dans les deux sens.
 Lorsque nous nous intéressons à un mot, il est donc possible de calculer la distance de ce mot aux autres mots du vocabulaire sur ces deux axes. Pour obtenir un chiffre unique de distance, nous prenons le max des deux distances (sur l'axe temporel et sur l'axe catégoriel). Prendre le max permet de pénaliser les termes proches en terme de distribution sur les années mais pas dans les classes et inversement.
 
-Ce résultat est implémenté dans **plotDistance.py** : 
-> python plotDistance.py informatique
+Ce résultat est implémenté dans **plotDistance.py**. 
+Exemple avec le terme *informatique* :
+```
+python plotDistance.py informatique
+```
+  
 
