@@ -1,3 +1,5 @@
+'''Given a lemma in the patents vocabulary, return the data we have on its lem2vec neighbours.'''
+
 import sys
 
 import numpy as np
