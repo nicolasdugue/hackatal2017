@@ -9,6 +9,19 @@ import gensim.models
 model = gensim.models.Word2Vec.load('embeddings/patentslem2vec.gensim')
 
 
+def kl(p, q):
+    """Kullback-Leibler divergence D(P || Q) for discrete distributions
+
+    Parameters
+    ----------
+    p, q : array-like, dtype=float, shape=n
+        Discrete probability distributions.
+    """
+    p = np.asarray(p, dtype=np.float)
+    q = np.asarray(q, dtype=np.float)
+    return np.sum(np.where(p != 0, p * np.log((p+1) / (q+1)), 0))
+
+
 def read_voc():
     res = {}
     with open('vocLemma.tsv') as voc_file:
@@ -18,42 +31,61 @@ def read_voc():
             except ValueError:
                 print(line)
                 continue
-            years = list(map(int, years.strip('[]').split(', ')))
-            classes = list(map(int, classes.strip('[]').split(', ')))
+            years = np.fromiter(map(int, years.strip('[]').split(', ')), dtype=int)
+            classes = np.fromiter(map(int, classes.strip('[]').split(', ')), dtype=int)
             res[lem] = (years, classes)
     return res
 
 
-def neighbours(word):
-    neighbs = (w for w, d in model.wv.most_similar(word))
+def neighbourhood(word, n=10):
+    neighbs = (w for w, d in model.wv.most_similar(word, topn=n))
     return [(w, voc.get(w, None)) for w in neighbs]
 
 
-def plot_neighbours(word):
-    n = neighbours(word)
+def plot_neighbourhood(word, topn=10):
+    n = neighbourhood(word, topn)
+    n.append((word, voc[word]))
+    for w, d in n:
+        if d is None:
+            print('Ignoring {w} : filtered out of vocabulary'.format(w=w))
+
+    n = [(w, d) for  w, d in n if d is not None]
 
     years_plot = plt.subplot(121)
-    years = np.arange(2000, 2015)
+    years = np.arange(2001, 2016)
 
     classes = 'ABCDEFGH'
     bar_width = 5
-    classes_x = bar_width*len(n)*np.arange(len(classes))
+    classes_x = bar_width*(len(n)+1)*np.arange(len(classes))
     classes_plot = plt.subplot(122)
     classes_plot.set_xticks(classes_x, minor=False)
     classes_plot.set_xticklabels(classes, minor=False)
 
     for i, (w, dat) in enumerate(n):
-        if dat is None:
-            continue
-        y, c = dat
+        y, c = map(np.asarray, dat)
+        # y = y/np.linalg.norm(y, ord=1)
         years_plot.plot(years, y, label=w)
+
+        c = c/np.linalg.norm(c, ord=1)
         classes_plot.bar(classes_x+i*bar_width,  c, width=bar_width, label=w)
 
     classes_plot.legend()
     years_plot.legend()
     plt.show()
 
+
+def neighbourhood_similarity(word, topn=10):
+    n = neighbourhood(word, topn)
+    n.append((word, voc[word]))
+    n = [(w, d) for w, d in n if d is not None]
+    year_oc = [y/np.linalg.norm(y, ord=2) for w, (y, c) in n]
+    dists_years = np.asarray([[np.linalg.norm(y1-y2, ord=2) for y2 in year_oc] for y1 in year_oc])
+    return dists_years.mean()
+
+
 voc = read_voc()
 
+
 if __name__ == '__main__':
-    plot_neighbours(sys.argv[1])
+    plot_neighbourhood(sys.argv[1])
+    # print(neighbourhood_similarity(sys.argv[1]))
