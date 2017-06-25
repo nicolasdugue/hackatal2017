@@ -78,3 +78,6 @@ Nous trions ensuite les mots selon leur valeur de feature f-mesure. Et dans chaq
 Les mots stables sont les mots qui permettent d'étiqueter le cluster dans le temps et qui décrivent ainsi les grands thème du cluster.
 
 Les mots qui évoluent représentent des thématiues émergentes ou mourantes.
+
+Dans le dossier *clusters/*, on trouve des *matrixN* et des *clusteringN.mx* avec *N \in {1,...,5}* (les 5 périodes de 3 ans que nous considérons) qui sont des fichiers qui décrivent respectivement l'appartenance des fichiers de la période aux cluster, et la fréquence d'apparition des mots du vocabulaire dans les documents de la période.
+si N=1, alors nous étudions les documents allant de 2001 à 2003.
