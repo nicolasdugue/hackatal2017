@@ -26,3 +26,10 @@ Nous avons la possibilité de filtrer ce vocabulaire en utilisant **filtre.py** 
 - le nombre de classe dans lequel le mot doit apparaitre au maximum (même raison).
 
 Par ailleurs, nous opérons des filtres sur les mots qui apparaissent une seule année, qui sont des digit(), etc...
+
+
+### Les fonctionnalités
+
+#### Les distances
+
+Pour être capables de discerner des tendances, des patterns d'évolution dans le corpus, nous nous intéressons en particulier aux **co-évolutions** entre les mots du vocabulaire. Pour les détecter, nous créons d'abord une représentation de notre vocabulaire dans le corpus en nous basant principalement sur deux axes : l'axe **temporel** des années, et l'axe des **catégories** que nous appellerons parfois **clusters** ou **groupes**. Nous considérons ici les grandes catégories (A, B, C, ..., H) pour nous simplifier la tâche. Par ailleurs, les résultats obtenus semblent pertinents empiriquement.
