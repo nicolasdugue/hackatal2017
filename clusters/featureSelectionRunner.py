@@ -12,7 +12,7 @@ import sys
 clustering=np.loadtxt(sys.argv[2])
 labels_col=[]
 #Read the labels of columns (features)
-labels=open("voc_freqmin50_docmax4000_classemax5")
+labels=open("../voc_freqmin100_docmax1000_classemax6")
 for ligne in labels:
 	labels_col.append(ligne.split("\t")[0].strip())
 #Load the file as a 2D array
