@@ -74,12 +74,14 @@ for annee in annees:
 res=open("voc.tsv","w")
 for mot in dicoFreq:
 	if not mot.isdigit():
-		s=""
+		s=[]
 		for classe in ["A", "B", "C", "D", "E", "F", "G", "H"]:
 			if (mot, classe) in dicoClass:
-				s+="("+str(classe)+","+ str(dicoClass[(mot, classe)])+")"	
+				s.append(dicoClass[(mot, classe)])	
+			else:
+				s.append(0)
 		if dicoYear[mot] > 1:
-			res.write(mot + "\t"+str(dicoFreq[mot])+"\t"+str(dicoYear[mot])+"\t"+s+"\n")
+			res.write(mot + "\t"+str(dicoFreq[mot])+"\t"+str(dicoYear[mot])+"\t"+str(s)+"\n")
 res.close()
 					
 
