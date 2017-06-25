@@ -1,5 +1,6 @@
 import os
 import string
+import numpy as np
 annees=os.listdir("hasIpcCorr")
 dicoFreq=dict()
 
@@ -74,14 +75,19 @@ for annee in annees:
 res=open("voc.tsv","w")
 for mot in dicoFreq:
 	if not mot.isdigit():
-		s=[]
-		for classe in ["A", "B", "C", "D", "E", "F", "G", "H"]:
-			if (mot, classe) in dicoClass:
-				s.append(dicoClass[(mot, classe)])	
-			else:
-				s.append(0)
 		if dicoYear[mot] > 1:
-			res.write(mot + "\t"+str(dicoFreq[mot])+"\t"+str(dicoYear[mot])+"\t"+str(s)+"\n")
+			s=[]
+			for classe in ["A", "B", "C", "D", "E", "F", "G", "H"]:
+				if (mot, classe) in dicoClass:
+					s.append(dicoClass[(mot, classe)])	
+				else:
+					s.append(0)
+			somme=np.sum(s)
+			if somme == 0:
+				s2=s
+			else:
+				s2=map(lambda x: x / float(somme), s)
+			res.write(mot + "\t"+str(dicoFreq[mot])+"\t"+str(dicoYear[mot])+"\t"+str(s)+"\t"+str(s2)+"\n")
 res.close()
 					
 
