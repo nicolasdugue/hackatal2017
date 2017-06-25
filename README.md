@@ -48,4 +48,16 @@ Exemple avec le terme *informatique* :
 python plotDistance.py informatique
 ```
   
+#### Les embeddings
+
+Intuitivement, il peut être sensé de penser qu'un mot très fréquemment utilisé dans le contexte d'un autre va suivre une distribution proche de celui-ci.
+Pour vérifier cela, nous avons appris des embeddings sur le corpus, et il est possible de visualiser la distribution de l'embedding d'un mot à l'aide du fichier **neighbours.py**
+Exeme avec le terme *sida* où l'on voit des tendances sur le nombre de brevets chaque année sur les maladies
+```
+python3 neighbours.py sida
+```
+ou encore avec *smartphone* où les tendances sont encore plus nettes :
+```
+python3 neighbours.py smartphone
+```
 
