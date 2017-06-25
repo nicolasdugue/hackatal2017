@@ -4,7 +4,7 @@ annees=os.listdir("hasIpcCorr")
 dicoFreq=dict()
 
 dicoYear=dict()
-#dicoClass
+dicoClass=dict()
 
 from string import maketrans
 
@@ -31,30 +31,39 @@ for annee in annees:
 	for f in fichiers:
 		brevet=open("hasIpcCorr/"+annee+"/"+f)
 		ensembleMotDoc=set()
+		ensembleClass=set()
 		for ligne in brevet:
-			if ligne.startswith("code :::") or ligne.startswith("file :::") or ligne.startswith("ipc :::") or ligne.startswith("date :::"):
+			if ligne.startswith("code :::") or ligne.startswith("file :::") or ligne.startswith("date :::") or ligne.startswith("description :::"):
 				continue
 			else:
-				ligne=ligne.strip("abstract :::").strip("claim :::")
-				ligne=ligne.translate(trantab)
-				ligne=ligne.split(" ")
-				for mot in ligne:
-					mot=mot.strip().lower()
-					if len(mot) > 3:
-						if mot in vocabHapax:
-							vocabHapax.remove(mot)
-						else:
-							if mot in dicoDoc:
-								if mot not in ensembleMotDoc:
-									ensembleMotDoc.add(mot)
-									dicoDoc[mot]+=1
-							else: #Pas vu cette annee
-								dicoDoc[mot]=1
-								if mot in dicoYear:
-									dicoYear[mot]+=1
-								else:
-									ensembleMotDoc.add(mot)
-									dicoYear[mot]=1
+				if ligne.startswith("ipc :::"):
+					ensembleClass.add(ligne.strip("ipc ::: ")[0])
+				else:	
+					ligne=ligne.strip("abstract :::").strip("claim :::")
+					ligne=ligne.translate(trantab)
+					ligne=ligne.split(" ")
+					for mot in ligne:
+						mot=mot.strip().lower()
+						if len(mot) > 3:
+							if mot in vocabHapax:
+								vocabHapax.remove(mot)
+							else:
+								for classe in ensembleClass:
+									if (mot,classe) in dicoClass:
+										dicoClass[(mot,classe)]+=1
+									else:
+										dicoClass[(mot,classe)]=1
+								if mot in dicoDoc:
+									if mot not in ensembleMotDoc:
+										ensembleMotDoc.add(mot)
+										dicoDoc[mot]+=1
+								else: #Pas vu cette annee
+									dicoDoc[mot]=1
+									if mot in dicoYear:
+										dicoYear[mot]+=1
+									else:
+										ensembleMotDoc.add(mot)
+										dicoYear[mot]=1
 	for mot in dicoDoc:
 		if mot not in dicoFreq:
 			dicoFreq[mot]=[]
@@ -64,7 +73,12 @@ for annee in annees:
 	cptAnnee+=1
 res=open("voc.tsv","w")
 for mot in dicoFreq:
-	res.write(mot + "\t"+str(dicoFreq[mot])+"\t"+str(dicoYear[mot])+"\n")
+	s=""
+	for classe in ["A", "B", "C", "D", "E", "F", "G", "H"]:
+		if (mot, classe) in dicoClass:
+			s+="("+str(classe)+","+ str(dicoClass[(mot, classe)])+")"	
+	if dicoYear[mot] > 1:
+		res.write(mot + "\t"+str(dicoFreq[mot])+"\t"+str(dicoYear[mot])+"\t"+s+"\n")
 res.close()
 					
 

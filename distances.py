@@ -25,7 +25,7 @@ def euclide(p, q):
     """
     p = np.asarray(p, dtype=np.float)
     q = np.asarray(q, dtype=np.float)
-    return np.sum(np.where(p != 0, p * np.log((p+1) / (q+1)), 0))
+    return np.sum( p * np.log((p+1) / (q+1)))
 
 fichier=open("vocFiltered.tsv")
 dico=set()
@@ -55,6 +55,6 @@ print error
 fichier =open("vocDistance-"+lemot+".tsv", "w")
 histoLeMot = freq[lemot]
 for mot in dico:
-	distance = kl(histoLeMot, freq[mot])
+	distance = kl(histoLeMot, freq[mot])+kl(freq[mot], histoLeMot)
 	fichier.write(mot+" "+str(distance)+"\n")
 fichier.close()
