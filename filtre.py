@@ -29,7 +29,7 @@ for ligne in fichier:
 		error+=1
 		pass
 print cpt
-fichier =open("voc_freqmin"+str(borneMin)+"_freqmax"+str(borneMax), "w")
+fichier =open("voc_freqmin"+str(borneMin)+"_docmax"+str(borneMax)+"_classemax"+nbClasseMax, "w")
 for mot in dico:
 	fichier.write(dico[mot]+"\n")
 fichier.close()
