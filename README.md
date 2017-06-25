@@ -60,4 +60,7 @@ ou encore avec *smartphone* où les tendances sont encore plus nettes :
 ```
 python3 neighbours.py smartphone
 ```
-
+ou avec *anxiolytique* qui montre la baisse du nombre de brevets ces dernières années sur les médicaments liés au maladie induisant une souffrance psychique :
+```
+python3 neighbours.py anxiolytique
+```
