@@ -1,5 +1,10 @@
 # hackatal2017 team karaoké
 
+## Descriptif de la tâche
+
+Voir https://github.com/HackaTAL/2017
+Tache 2. Identification des tendances stratégiques liées aux brevets
+
 ## Installation
 
 To run the code, one needs:
