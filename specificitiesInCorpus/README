@@ -1,0 +1,2 @@
+
+ Run Jar with java -jar -Dfile.encoding=UTF8 Hackatal-1.0-SNAPSHOT-jar-with-dependencies.jar TERM 
