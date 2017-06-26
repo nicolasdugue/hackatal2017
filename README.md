@@ -83,9 +83,13 @@ Les mots qui évoluent représentent des thématiues émergentes ou mourantes.
 Dans le dossier *clusters/*, on trouve des *matrixN* et des *clusteringN.mx* avec *N \in {1,...,5}* (les 5 périodes de 3 ans que nous considérons) qui sont des fichiers qui décrivent respectivement l'appartenance des fichiers de la période aux cluster, et la fréquence d'apparition des mots du vocabulaire dans les documents de la période.
 si N=1, alors nous étudions les documents allant de 2001 à 2003.
 
+Pour voir l'utilisation plus en détail, rendez-vous dans le dossier
+https://github.com/nicolasdugue/hackatal2017/tree/master/clusters/SpecifitesParCluster
+
 #### Les spécificités
 
 Le principe est ici de voir les années et le domaines où un terme est le plus spécifique. Cela permet de voir l'évolution de son usage et de l'inscrire immédiatement dans une époque.
 Nous avons adapté la mesure TF-IDF habituellement utilisée pour l'usage des termes à l'intérieur des documents à leur usage à travers les années et les domaines.
 Selon la spécificité, nous établissons le classement par ordre décroissant des domaines et des années pour le terme choisi.
 
+Utilisation ici : https://github.com/nicolasdugue/hackatal2017/tree/master/specificitiesInCorpus
