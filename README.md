@@ -5,6 +5,10 @@
 Voir https://github.com/HackaTAL/2017
 Tache 2. Identification des tendances stratégiques liées aux brevets
 
+## Slides
+
+Voir https://github.com/nicolasdugue/hackatal2017/blob/master/hackatal2017.pdf
+
 ## Installation
 
 To run the code, one needs:
