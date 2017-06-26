@@ -1,2 +1,9 @@
 
- Run Jar with java -jar -Dfile.encoding=UTF8 Hackatal-1.0-SNAPSHOT-jar-with-dependencies.jar TERM 
+ Run Jar with java -jar -Dfile.encoding=UTF8 Hackatal-1.0-SNAPSHOT-jar-with-dependencies.jar TERM
+ 
+ Source code just for viewing code, do not use source codes to run, it needs some other dependencies not presented because not my own.
+ 
+ Some resource files with stats on corpus are used allowing to not read it at each query
+     DocByDomain.tsv :  used to get size of each domain classs population
+     docByYear.tsv : used to get size of each year class population
+     vocLemma.tsv : used to get document occurrences of each lemma through year and domain corpuses
