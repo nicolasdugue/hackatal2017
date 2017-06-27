@@ -66,18 +66,24 @@ où l'on observe des proximités intéressantes.
 
 Intuitivement, il peut être sensé de penser qu'un mot très fréquemment utilisé dans le contexte d'un autre va suivre une distribution proche de celui-ci.
 Pour vérifier cela, nous avons appris des embeddings sur le corpus, et il est possible de visualiser la distribution de l'embedding d'un mot à l'aide du fichier **neighbours.py**
-Exeme avec le terme *sida* où l'on voit des tendances sur le nombre de brevets chaque année sur les maladies
+Exemple avec le terme *sida* où l'on voit des tendances sur le nombre de brevets chaque année sur les maladies, notamment une forte décroissance au début sur quasiment tous les mots proches (en abscisse les années, en ordonnée le nombre de document dans lequels le mot apparait) :
 ```
 python3 neighbours.py sida
 ```
-ou encore avec *smartphone* où les tendances sont encore plus nettes :
+![sida embedding](img/sida.png)
+
+ou encore avec *smartphone* où les tendances sont encore plus nettes, on voit diminuer l'utilisation des mots *téléphone* et *appeler* :
 ```
 python3 neighbours.py smartphone
 ```
+![smartphone embedding](img/smartphone.png)
+
 ou avec *anxiolytique* qui montre la baisse du nombre de brevets ces dernières années sur les médicaments liés au maladie induisant une souffrance psychique :
 ```
 python3 neighbours.py anxiolytique
 ```
+![anciolytique embedding](img/anxiolytique.png)
+
 
 #### Les clusters
 
@@ -94,6 +100,8 @@ si N=1, alors nous étudions les documents allant de 2001 à 2003.
 
 Pour voir l'utilisation plus en détail, rendez-vous dans le dossier
 https://github.com/nicolasdugue/hackatal2017/tree/master/clusters/SpecifitesParCluster
+
+Cette approche est inspirée de celle développée dans le projet ISTEX-R dont les résultats sont visibles ici : https://github.com/nicolasdugue/istex-demonstrateur
 
 #### Les spécificités
 
