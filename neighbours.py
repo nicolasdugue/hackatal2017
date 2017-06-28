@@ -1,9 +1,24 @@
 '''Given a lemma in the patents vocabulary, return the data we have on its lem2vec neighbours.'''
 
 import sys
-
 import numpy as np
-import matplotlib.pyplot as plt
+
+import logging
+logging.basicConfig(level=logging.INFO)
+
+# Try to select a better matplotlib backend
+import matplotlib
+gui_env = ['QT5Agg', 'Qt4Agg', 'GTKAgg', 'TKAgg', 'WXAgg']
+for gui in gui_env:
+    try:
+        matplotlib.use(gui, warn=False, force=True)
+        from matplotlib import pyplot as plt
+        break
+    except ImportError:
+        continue
+
+logging.info("Using matplotlib backend %s", matplotlib.get_backend())
+
 
 import gensim.models
 model = gensim.models.Word2Vec.load('embeddings/patentslem2vec.gensim')
@@ -71,6 +86,7 @@ def plot_neighbourhood(word, topn=10):
 
     classes_plot.legend()
     years_plot.legend()
+    plt.gcf().canvas.set_window_title('Neighbourhood of {word!r}'.format(word=word))
     plt.show()
 
 
