@@ -1,13 +1,14 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# -*- coding: latin-1 -*-
 import pylab as py
-
-# coding: latin1
 
 import sys
 import matplotlib.pyplot as plt
 import numpy as np
 
+#Pour l'encodage des caractères acentués
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 def kl(p, q):
     """Kullback-Leibler divergence D(P || Q) for discrete distributions
@@ -21,6 +22,8 @@ def kl(p, q):
     q = np.asarray(q, dtype=np.float)
     return np.sum(np.where(p != 0, p * np.log((p+1) / (q+1)), 0))
 
+def symmetrized_kl(p,q):
+	return (kl(p,q) + kl(q,p)) / float(2)
 
 def euclide(p, q):
     total = 0
@@ -29,7 +32,7 @@ def euclide(p, q):
     return total
 
 def get_distance(p,q):
-	return euclide(p,q)
+	return symmetrized_kl(p,q)
 
 fichier=open("vocLemma.tsv")
 dico=set()
@@ -71,7 +74,7 @@ for mot in dico:
 	distance = get_distance(histoLeMot, freq[mot])
 	maxDistanceTempo=max(maxDistanceTempo,distance)
 
-data=[("a",1000,10000,10000),("a",1000,10000,10000),("a",1000,10000,10000),("a",1000,10000,10000),("a",1000,10000,10000),("a",1000,10000,10000)]
+data=[("a",10000000000,10000000000,10000),("a",10000000000,10000000000,10000),("a",10000000000,10000000000,10000),("a",10000000000,10000000000,10000),("a",10000000000,10000000000,10000)]
 for mot in dico:
 	# distance1 = (kl(histoLeMot, freq[mot])+kl(freq[mot], histoLeMot))/maxDistanceTempo
 	distance1 = get_distance(histoLeMot, freq[mot])/float(maxDistanceTempo)
@@ -94,13 +97,10 @@ forHistoTime=[]
 forHistoClass=[]
 names=[]
 for item in data:
-	try:
-		plt.scatter(item[1]*1000, item[2]*1000, s=5000, c=(item[2], 0, 1 - item[2]), marker=r"$ {} $".format(item[0]), edgecolors='none' )
-		names.append(item[0])
-		forHistoTime.append(freq[item[0] ])
-		forHistoClass.append(classesnorm[item[0] ])
-	except: 
-		pass
+	plt.scatter(item[1]*1000, item[2]*1000, s=5000, c=(item[2], 0, 1 - item[2]), marker=r"$ {} $".format(item[0]), edgecolors='none' )
+	names.append(item[0])
+	forHistoTime.append(freq[item[0] ])
+	forHistoClass.append(classesnorm[item[0] ])
 plt.xlabel('Distance sur la distribution dans les annees')
 plt.ylabel('Distance sur la distribution dans les catego')
 
