@@ -5,6 +5,7 @@ import pylab as py
 import sys
 import matplotlib.pyplot as plt
 import numpy as np
+from math import sqrt
 
 #Pour l'encodage des caractères acentués
 reload(sys)
@@ -29,10 +30,10 @@ def euclide(p, q):
     total = 0
     for idx, value in enumerate(p):
        total += (value-q[idx])*(value-q[idx])
-    return total
+    return sqrt(total)
 
 def get_distance(p,q):
-	return symmetrized_kl(p,q)
+	return euclide(p,q)
 
 fichier=open("vocLemma.tsv")
 dico=set()
