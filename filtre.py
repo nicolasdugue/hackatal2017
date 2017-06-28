@@ -1,7 +1,7 @@
 import sys
 import numpy as np
 
-fichier=open("voc.tsv")
+fichier=open("vocLemma.tsv")
 dico=dict()
 
 borneMin=int(sys.argv[1])
