@@ -7,7 +7,7 @@ Tache 2. Identification des tendances stratégiques liées aux brevets
 
 ## Slides
 
-Voir https://github.com/nicolasdugue/hackatal2017/blob/master/hackatal2017.pdf
+Voir https://github.com/nicolasdugue/hackatal2017/blob/master/slides/hackatal2017.pdf
 
 ## Installation
 
