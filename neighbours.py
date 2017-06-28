@@ -1,10 +1,29 @@
-'''Given a lemma in the patents vocabulary, return the data we have on its lem2vec neighbours.'''
+'''Given a lemma in the patents vocabulary, return the data we have on its lem2vec neighbours.
 
-import sys
-import numpy as np
+Usage:
+  neighbours [--forms | --model <modelfile>] [--number <n>] <word>
+  neighbours plot [options] <word>
+
+Commands:
+  plot (default)  Display a graphical representation
+
+Options:
+  -f, --forms  Use word2vec instead of lem2vec
+  -m, --model <modelfile>  Use another gensim model file
+                           [default: embeddings/patentslem2vec.gensim]
+  -n, --number <n>  Size of the neighbourhood  [default: 10]
+  -h, --help  Print this help message'''
+
+import typing as ty
 
 import logging
-logging.basicConfig(level=logging.INFO)
+import sys
+logging.basicConfig(level=logging.INFO)  # noqa
+
+import gensim.models
+import numpy as np
+
+from docopt import docopt
 
 # Try to select a better matplotlib backend
 import matplotlib
@@ -20,25 +39,33 @@ for gui in gui_env:
 logging.info("Using matplotlib backend %s", matplotlib.get_backend())
 
 
-import gensim.models
-model = gensim.models.Word2Vec.load('embeddings/patentslem2vec.gensim')
+# Only load the model and vocabulary on-demand
+CACHED_MODEL = None
+CACHED_VOCABULARY = None
 
 
-def kl(p, q):
-    """Kullback-Leibler divergence D(P || Q) for discrete distributions
+def get_model(
+    model_path: str = 'embeddings/patentslem2vec.gensim',
+    force_reload: bool = False
+    ) -> gensim.models.keyedvectors.KeyedVectors:
 
-    Parameters
-    ----------
-    p, q : array-like, dtype=float, shape=n
-        Discrete probability distributions.
-    """
-    p = np.asarray(p, dtype=np.float)
-    q = np.asarray(q, dtype=np.float)
-    return np.sum(np.where(p != 0, p * np.log((p+1) / (q+1)), 0))
+    global CACHED_MODEL
+    if CACHED_MODEL is None or force_reload:
+        CACHED_MODEL = gensim.models.Word2Vec.load('embeddings/patentslem2vec.gensim')
+    return CACHED_MODEL
 
 
-def read_voc():
-    res = {}
+
+def get_voc(
+    voc_path: str = 'vocLemma.tsv',
+    force_reload: bool = False
+    ) -> ty.Dict[str, ty.Tuple[np.ndarray, np.ndarray]]:
+    '''Extract the temporal and class repartition of `word` in from a vocabulary file.'''
+    global CACHED_VOCABULARY
+    if CACHED_VOCABULARY is not None and not force_reload:
+        return CACHED_VOCABULARY
+
+    res = {}  # type: ty.Dict[str, ty.Tuple[np.ndarray, np.ndarray]]
     with open('vocLemma.tsv') as voc_file:
         for line in (l for l in voc_file if not l.isspace()):
             try:
@@ -49,22 +76,37 @@ def read_voc():
             years = np.fromiter(map(int, years.strip('[]').split(', ')), dtype=int)
             classes = np.fromiter(map(int, classes.strip('[]').split(', ')), dtype=int)
             res[lem] = (years, classes)
+    CACHED_VOCABULARY = res
     return res
 
 
-def neighbourhood(word, n=10):
+def neighbourhood(
+    word: str, n: int = 10,
+    model: gensim.models.keyedvectors.KeyedVectors = None,
+    voc: ty.Dict[str, ty.Tuple[np.ndarray, np.ndarray]] = None
+    ) -> ty.List[ty.Tuple[str, ty.Union[ty.Tuple[np.ndarray, np.ndarray], None]]]:
+    '''Return the `n` closest neighbours of `word` in `model`.'''
+    if model is None:
+        model = get_model()
+    if voc is None:
+        voc = get_voc()
+
     neighbs = (w for w, d in model.wv.most_similar(word, topn=n))
-    return [(w, voc.get(w, None)) for w in neighbs]
+    return [(w, voc.get(w, None)) for w in (word, *neighbs)]
 
 
-def plot_neighbourhood(word, topn=10):
-    n = neighbourhood(word, topn)
-    n.append((word, voc[word]))
+def plot_neighbourhood(
+    word: str, topn: int = 10,
+    model: gensim.models.keyedvectors.KeyedVectors = None,
+    voc: ty.Dict[str, ty.Tuple[np.ndarray, np.ndarray]] = None):
+    '''Display a graphical representation of the temporal and class distribution of the
+       `topn` closest neighbours of `word`.'''
+    n = neighbourhood(word, topn, model, voc)
     for w, d in n:
         if d is None:
             print('Ignoring {w} : filtered out of vocabulary'.format(w=w))
 
-    n = [(w, d) for  w, d in n if d is not None]
+    n = [(w, d) for w, d in n if d is not None]
 
     years_plot = plt.subplot(121)
     years = np.arange(2001, 2016)
@@ -82,7 +124,7 @@ def plot_neighbourhood(word, topn=10):
         years_plot.plot(years, y, label=w)
 
         c = c/np.linalg.norm(c, ord=1)
-        classes_plot.bar(classes_x+i*bar_width,  c, width=bar_width, label=w)
+        classes_plot.bar(classes_x+i*bar_width, c, width=bar_width, label=w)
 
     classes_plot.legend()
     years_plot.legend()
@@ -99,9 +141,26 @@ def neighbourhood_similarity(word, topn=10):
     return dists_years.mean()
 
 
-voc = read_voc()
+def main_entry_point(argv=sys.argv[1:]):
+    arguments = docopt(__doc__, version='0.0.0', argv=argv)
+
+    if arguments['--forms']:
+        model_path = 'embeddings/patentsword2vec.gensim'
+    else:
+        model_path = arguments['--model']
+
+    model = get_model(model_path)
+
+    word = arguments['<word>']
+
+    if word not in model.wv.vocab:
+        logging.error('{word!r} is not in the model'.format(word=word))
+        sys.exit(1)
+
+    plot_neighbourhood(word,
+                       topn=int(arguments['--number']),
+                       model=model)
 
 
 if __name__ == '__main__':
-    plot_neighbourhood(sys.argv[1])
-    # print(neighbourhood_similarity(sys.argv[1]))
+    main_entry_point()
