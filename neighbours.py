@@ -16,12 +16,21 @@ Options:
 
 import typing as ty
 
-import logging
 import sys
-logging.basicConfig(level=logging.INFO)  # noqa
+
+try:
+    import logbook
+    logger = logbook.Logger('neighbours', level=logbook.DEBUG)
+    logbook.StderrHandler(level=logbook.DEBUG).push_application()
+except ImportError:  # Fall back to stdlib logging
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.INFO)
 
 import gensim.models
 import numpy as np
+
+import scipy.interpolate
 
 from docopt import docopt
 
@@ -36,7 +45,7 @@ for gui in gui_env:
     except ImportError:
         continue
 
-logging.info("Using matplotlib backend %s", matplotlib.get_backend())
+logger.info("Using matplotlib backend %s", matplotlib.get_backend())
 
 
 # Only load the model and vocabulary on-demand
@@ -71,7 +80,7 @@ def get_voc(
             try:
                 lem, years, _, classes, _ = line.split('\t')
             except ValueError:
-                print(line)
+                logger.warn('Incorrect line in lexicon : {line!r}'.format(line=line))
                 continue
             years = np.fromiter(map(int, years.strip('[]').split(', ')), dtype=int)
             classes = np.fromiter(map(int, classes.strip('[]').split(', ')), dtype=int)
@@ -104,7 +113,7 @@ def plot_neighbourhood(
     n = neighbourhood(word, topn, model, voc)
     for w, d in n:
         if d is None:
-            print('Ignoring {w} : filtered out of vocabulary'.format(w=w))
+            logger.warn('Ignoring {w!r} : filtered out of vocabulary'.format(w=w))
 
     n = [(w, d) for w, d in n if d is not None]
 
@@ -119,15 +128,24 @@ def plot_neighbourhood(
     classes_plot.set_xticklabels(classes, minor=False)
 
     for i, (w, dat) in enumerate(n):
-        y, c = map(np.asarray, dat)
+        y, c = dat
         # y = y/np.linalg.norm(y, ord=1)
-        years_plot.plot(years, y, label=w)
+        years_plot.plot(years, y, label=repr(w))
 
         c = c/np.linalg.norm(c, ord=1)
-        classes_plot.bar(classes_x+i*bar_width, c, width=bar_width, label=w)
+        classes_plot.bar(classes_x+i*bar_width, c, width=bar_width, label=repr(w))
 
-    classes_plot.legend()
-    years_plot.legend()
+    # Average temporal curve
+    average_plot = years_plot.twinx()
+    average_plot.set_ylim([0, 1])
+    average_curve = np.mean(np.stack(y/np.linalg.norm(y, ord=2) for w, (y, c) in n), axis=0)
+    # average_curve = np.mean(np.stack(y for w, (y, c) in n), axis=0)
+    average_regression = scipy.interpolate.UnivariateSpline(years, average_curve, s=20)
+    average_plot.plot(years, average_regression(years), linestyle='dotted', label='Average')
+
+    classes_plot.legend(loc='best')
+    years_plot.legend(loc='best')
+    average_plot.legend(loc='best')
     plt.gcf().canvas.set_window_title('Neighbourhood of {word!r}'.format(word=word))
     plt.show()
 
@@ -154,7 +172,7 @@ def main_entry_point(argv=sys.argv[1:]):
     word = arguments['<word>']
 
     if word not in model.wv.vocab:
-        logging.error('{word!r} is not in the model'.format(word=word))
+        logger.error('{word!r} is not in the model'.format(word=word))
         sys.exit(1)
 
     plot_neighbourhood(word,
