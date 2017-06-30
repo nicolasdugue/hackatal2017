@@ -11,7 +11,7 @@ def compteAnneeNonNulle(vecteur):
 	return nb
 
 # fichier d'entrée
-fichier=open("vocFiltered.tsv")
+fichier=open("voc.tsv")
 dico=set()
 
 # mot pour le calcul de distance
@@ -60,11 +60,11 @@ for ligne in fichier:
 			if (mot in dico):
 				np.add(freq[mot], freqM, freq[mot])
 				np.add(classes[mot], classesM, classes[mot])
-				np.add(classesnorm[mot], classesnormM, classesnorm[mot])
+				#np.add(classesnorm[mot], classesnormM, classesnorm[mot])
 			else:
 				freq[mot]=freqM
 				classes[mot]=classesM
-				classesnorm[mot]=classesnormM
+				#classesnorm[mot]=classesnormM
 				dico.add(mot)
 				cpt+=1
 		else:
@@ -81,5 +81,7 @@ print "compression : " + str(lignes-(cpt+error))
 
 sortie =open("vocLemma.tsv", "w")
 for mot in dico:
-	sortie.write(mot + "\t" + str(list(freq[mot])) + "\t" + str(compteAnneeNonNulle(freq[mot])) + "\t" + str(list(classes[mot])) + "\t" + str(list(classesnorm[mot])) + "\n")
+	somme=np.sum(classes[mot])
+	s2=map(lambda x: x / float(somme), classes[mot])
+	sortie.write(mot + "\t" + str(list(freq[mot])) + "\t" + str(compteAnneeNonNulle(freq[mot])) + "\t" + str(list(classes[mot])) + "\t" + str(list(s2)) + "\n")
 sortie.close()
